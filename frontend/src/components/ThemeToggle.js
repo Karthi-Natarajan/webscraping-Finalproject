@@ -1,26 +1,46 @@
-import React, { useEffect, useState } from "react";
+import React, { useState, useEffect } from 'react';
 
-export default function ThemeToggle() {
-  const [dark, setDark] = useState(() =>
-    localStorage.getItem("theme") === "dark"
-  );
+const ThemeToggle = () => {
+  const [isDarkMode, setIsDarkMode] = useState(false);
 
   useEffect(() => {
-    if (dark) {
-      document.body.classList.add("dark");
-      localStorage.setItem("theme", "dark");
+    // Check localStorage for saved theme preference
+    const savedTheme = localStorage.getItem('theme');
+    const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+    
+    const initialTheme = savedTheme === 'dark' || (!savedTheme && prefersDark);
+    setIsDarkMode(initialTheme);
+    applyTheme(initialTheme);
+  }, []);
+
+  const applyTheme = (darkMode) => {
+    const root = document.documentElement;
+    
+    if (darkMode) {
+      root.classList.add('dark-theme');
+      localStorage.setItem('theme', 'dark');
     } else {
-      document.body.classList.remove("dark");
-      localStorage.setItem("theme", "light");
+      root.classList.remove('dark-theme');
+      localStorage.setItem('theme', 'light');
     }
-  }, [dark]);
+  };
+
+  const toggleTheme = () => {
+    const newTheme = !isDarkMode;
+    setIsDarkMode(newTheme);
+    applyTheme(newTheme);
+  };
 
   return (
-    <button
-      className="theme-toggle-btn"
-      onClick={() => setDark(!dark)}
+    <button 
+      className="theme-toggle"
+      onClick={toggleTheme}
+      aria-label={isDarkMode ? 'Switch to light mode' : 'Switch to dark mode'}
+      title={isDarkMode ? 'Switch to light mode' : 'Switch to dark mode'}
     >
-      {dark ? "🌙 Dark" : "☀️ Light"}
+      {isDarkMode ? '☀️' : '🌙'}
     </button>
   );
-}
+};
+
+export default ThemeToggle;

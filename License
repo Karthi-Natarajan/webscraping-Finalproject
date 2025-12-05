@@ -1,0 +1,11 @@
+
+## 📁 **INDIVIDUAL FOLDER .gitignore FILES**
+
+### **3. `backend/.gitignore`** (Optional - for backend-specific)
+```gitignore
+# Remove the backend-specific one since root covers it
+# Or keep this minimal:
+__pycache__/
+venv/
+.env
+*.pyc

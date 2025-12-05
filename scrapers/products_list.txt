@@ -1,0 +1,48 @@
+# ==============================
+# 📋 PRODUCTS TO SCRAPE
+# ==============================
+# Format: Category | Product Name (or Search Term)
+# ==============================
+
+# 📱 SMARTPHONES
+smartphone | iPhone 15
+smartphone | Samsung Galaxy S24
+smartphone | OnePlus 12
+smartphone | Redmi 13 Pro
+smartphone | Vivo V29
+smartphone | Realme 11 Pro
+smartphone | Motorola Edge 40
+smartphone | Nothing Phone 2
+smartphone | Google Pixel 8
+smartphone | POCO X6 Pro
+
+# 💻 ELECTRONICS
+electronics | HP Laptop
+electronics | Dell Inspiron
+electronics | Lenovo ThinkPad
+electronics | Apple MacBook Air
+electronics | Samsung Galaxy Tab
+electronics | iPad
+electronics | Sony Headphones
+electronics | boAt Earbuds
+electronics | Samsung Smartwatch
+electronics | Mi Power Bank
+
+# 🏠 HOME APPLIANCES
+home | Samsung TV
+home | LG Refrigerator
+home | Whirlpool Washing Machine
+home | Voltas AC
+home | Philips Air Fryer
+home | Kent Water Purifier
+home | Prestige Cooker
+home | Bajaj Mixer
+home | Havells Fan
+home | Usha Heater
+
+# 🎮 OTHER CATEGORIES
+other | Nike Shoes
+other | Levi's Jeans
+other | Titan Watch
+other | Fastrack Sunglasses
+other | Skybags Backpack

@@ -1,6 +1,7 @@
-venv/
+# Remove the scrapers one - let root handle it
+# Or keep this:
 __pycache__/
-logs/
-chrome-data/
-.env
+venv/
+*.pyc
+drivers/
 *.log

@@ -1,0 +1,17 @@
+FLIPKART REVIEWS MASTER DATASET SUMMARY
+==================================================
+
+Generated: 2025-12-05 15:35:47
+Total Reviews: 186
+Source Files: 1
+Master File: flipkart_MASTER_DATASET_20251205_153547.csv
+
+CATEGORIES:
+  Electronics: 186
+
+RATINGS:
+  1 stars: 186
+  2 stars: 0
+  3 stars: 0
+  4 stars: 0
+  5 stars: 0

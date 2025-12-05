@@ -1,112 +1,92 @@
-* {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
-  font-family: 'Poppins', sans-serif;
-}
+/* index.css - Add these at the end */
 
-body {
-  background: linear-gradient(135deg, #0f0f29, #1d1d42);
-  color: #fff;
-  min-height: 100vh;
-}
-
-.center-page {
+/* App Loading Styles */
+.app-loading {
   display: flex;
-  justify-content: center;
-  align-items: center;
-  height: 100vh;
-  text-align: center;
   flex-direction: column;
-}
-
-.glass-card {
-  background: rgba(255, 255, 255, 0.08);
-  padding: 40px;
-  width: 500px;
-  border-radius: 20px;
-  backdrop-filter: blur(10px);
-  border: 1px solid rgba(255, 255, 255, 0.2);
-  box-shadow: 0 8px 35px rgba(0, 0, 0, 0.3);
-}
-
-.search-input {
-  width: 100%;
-  padding: 15px;
-  border-radius: 12px;
-  font-size: 18px;
-  border: none;
-  outline: none;
-  margin-top: 20px;
-}
-
-.glow-btn {
-  margin-top: 25px;
-  width: 100%;
-  padding: 15px;
-  border-radius: 12px;
-  font-size: 18px;
-  border: none;
-  cursor: pointer;
-  background: linear-gradient(90deg, #4b61ff, #6a89ff);
+  align-items: center;
+  justify-content: center;
+  height: 100vh;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
   color: white;
-  font-weight: 600;
-  transition: 0.3s ease;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+    sans-serif;
 }
 
-.glow-btn:hover {
-  transform: translateY(-3px);
-  box-shadow: 0 0 15px #4b61ff;
-  background: linear-gradient(90deg, #6a89ff, #839eff);
-}
-
-.title {
-  font-size: 32px;
-  font-weight: 600;
-}
-.result-card {
-  background: rgba(255, 255, 255, 0.08);
-  padding: 30px;
-  border-radius: 18px;
-  margin-top: 30px;
-  max-width: 600px;
-  backdrop-filter: blur(8px);
-  border: 1px solid rgba(255, 255, 255, 0.2);
-}
-
-.loading-text {
-  margin-top: 20px;
-  font-size: 18px;
-  opacity: 0.8;
-}
-
-.dashboard-btn {
-  margin-top: 20px;
-  padding: 12px 20px;
-  background: linear-gradient(90deg, #ff6b6b, #ff8e8e);
-  border: none;
-  border-radius: 10px;
-  color: white;
-  font-size: 16px;
-  cursor: pointer;
-  transition: 0.3s ease;
-}
-
-.dashboard-btn:hover {
-  transform: translateY(-3px);
-  box-shadow: 0 0 15px #ff6b6b;
-}
-
-.spinner {
-  margin-top: 25px;
-  border: 5px solid rgba(255, 255, 255, 0.2);
-  border-top: 5px solid #4b61ff;
+.app-loading .spinner {
+  width: 50px;
+  height: 50px;
+  border: 4px solid rgba(255, 255, 255, 0.3);
   border-radius: 50%;
-  width: 45px;
-  height: 45px;
-  animation: spin 1s linear infinite;
+  border-top-color: white;
+  animation: spin 1s ease-in-out infinite;
+  margin-bottom: 20px;
 }
 
 @keyframes spin {
-  100% { transform: rotate(360deg); }
+  to { transform: rotate(360deg); }
+}
+
+.app-loading p {
+  font-size: 1.2rem;
+  opacity: 0.9;
+}
+
+/* Backend Status Badges */
+.backend-status {
+  padding: 6px 12px;
+  border-radius: 20px;
+  font-size: 0.8rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin-left: 10px;
+  display: inline-block;
+}
+
+.backend-status.connected {
+  background-color: #10b981;
+  color: white;
+  box-shadow: 0 2px 4px rgba(16, 185, 129, 0.3);
+}
+
+.backend-status.disconnected {
+  background-color: #ef4444;
+  color: white;
+  box-shadow: 0 2px 4px rgba(239, 68, 68, 0.3);
+}
+
+.backend-status.checking {
+  background-color: #f59e0b;
+  color: white;
+  box-shadow: 0 2px 4px rgba(245, 158, 11, 0.3);
+}
+
+/* Main App Container */
+.app {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+.main-content {
+  flex: 1;
+  padding: 20px;
+  max-width: 1200px;
+  margin: 0 auto;
+  width: 100%;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .main-content {
+    padding: 15px;
+  }
+  
+  .backend-status {
+    font-size: 0.7rem;
+    padding: 4px 8px;
+    margin-left: 5px;
+  }
 }

@@ -1,0 +1,69 @@
+{
+  "total_attempted": 10,
+  "successful": 0,
+  "failed": 10,
+  "total_reviews": 0,
+  "completion_time": "2025-12-04T00:34:33.324836",
+  "details": [
+    {
+      "source": "flipkart",
+      "keyword": "iPhone 16",
+      "timestamp": "2025-12-04 00:29:52",
+      "error": "No product found on search page"
+    },
+    {
+      "source": "flipkart",
+      "keyword": "iPhone 15",
+      "timestamp": "2025-12-04 00:30:27",
+      "error": "No product found on search page"
+    },
+    {
+      "source": "flipkart",
+      "keyword": "Samsung Galaxy S23",
+      "timestamp": "2025-12-04 00:30:54",
+      "error": "No product found on search page"
+    },
+    {
+      "source": "flipkart",
+      "keyword": "Samsung S24 Ultra",
+      "timestamp": "2025-12-04 00:31:22",
+      "error": "No product found on search page"
+    },
+    {
+      "source": "flipkart",
+      "keyword": "Vivo V30",
+      "timestamp": "2025-12-04 00:31:50",
+      "error": "No product found on search page"
+    },
+    {
+      "source": "flipkart",
+      "keyword": "Oppo Reno 11",
+      "timestamp": "2025-12-04 00:32:17",
+      "error": "No product found on search page"
+    },
+    {
+      "source": "flipkart",
+      "keyword": "OnePlus 12",
+      "timestamp": "2025-12-04 00:32:44",
+      "error": "No product found on search page"
+    },
+    {
+      "source": "flipkart",
+      "keyword": "Realme 12 Pro",
+      "timestamp": "2025-12-04 00:33:11",
+      "error": "No product found on search page"
+    },
+    {
+      "source": "flipkart",
+      "keyword": "Xiaomi 14",
+      "timestamp": "2025-12-04 00:33:38",
+      "error": "No product found on search page"
+    },
+    {
+      "source": "flipkart",
+      "keyword": "Moto Edge 50",
+      "timestamp": "2025-12-04 00:34:07",
+      "error": "No product found on search page"
+    }
+  ]
+}
