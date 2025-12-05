@@ -120,7 +120,7 @@ class DataLoader:
             print("⚠️ No data to save to MongoDB")
             return
         
-        if not self.collection:
+        if self.collection is None:  # FIXED: Use 'is None' instead of 'not'
             print("⚠️ MongoDB not connected, skipping save")
             return
         
@@ -158,7 +158,7 @@ class DataLoader:
     # -------------------------------------------------------------
     def _load_from_mongodb(self) -> bool:
         """Load data from MongoDB"""
-        if not self.collection:
+        if self.collection is None:  # FIXED: Use 'is None' instead of 'not'
             return False
         
         try:
@@ -304,7 +304,7 @@ class DataLoader:
     # -------------------------------------------------------------
     def add_review(self, review_data: Dict) -> bool:
         """Add a new review to MongoDB"""
-        if not self.collection:
+        if self.collection is None:  # FIXED: Use 'is None' instead of 'not'
             print("⚠️ MongoDB not connected")
             return False
         
@@ -337,12 +337,12 @@ class DataLoader:
 
     def _refresh_from_mongodb(self):
         """Refresh DataFrame from MongoDB"""
-        if self.collection:
+        if self.collection is not None:  # FIXED: Use 'is not None' instead of truthy
             self._load_from_mongodb()
 
     def get_mongo_stats(self) -> Dict[str, Any]:
         """Get MongoDB statistics"""
-        if not self.collection:
+        if self.collection is None:  # FIXED: Use 'is None' instead of 'not'
             return {"status": "not_connected"}
         
         try:
@@ -441,7 +441,7 @@ class DataLoader:
             "status": "loaded",
             "dataset_path": str(self.csv_path),
             "mongo_connected": self.collection is not None,
-            "storage_mode": "mongodb" if self.collection else "csv"
+            "storage_mode": "mongodb" if self.collection is not None else "csv"
         }
         
         # Add sentiment stats if available
