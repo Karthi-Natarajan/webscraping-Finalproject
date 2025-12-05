@@ -120,7 +120,7 @@ class DataLoader:
             print("⚠️ No data to save to MongoDB")
             return
         
-        if self.collection is None:  # FIXED: Use 'is None' instead of 'not'
+        if self.collection is None:
             print("⚠️ MongoDB not connected, skipping save")
             return
         
@@ -133,6 +133,11 @@ class DataLoader:
                 # Add timestamp
                 record["created_at"] = datetime.utcnow()
                 record["updated_at"] = datetime.utcnow()
+                
+                # FIX: Convert pandas NaT/NaN to None for MongoDB compatibility
+                for key, value in record.items():
+                    if pd.isna(value):
+                        record[key] = None
                 
                 # Add sentiment analysis
                 if "review_text" in record and record["review_text"]:
@@ -152,13 +157,15 @@ class DataLoader:
             
         except Exception as e:
             print(f"❌ Error saving to MongoDB: {e}")
+            import traceback
+            traceback.print_exc()
 
     # -------------------------------------------------------------
     # Load from MongoDB
     # -------------------------------------------------------------
     def _load_from_mongodb(self) -> bool:
         """Load data from MongoDB"""
-        if self.collection is None:  # FIXED: Use 'is None' instead of 'not'
+        if self.collection is None:
             return False
         
         try:
@@ -293,9 +300,11 @@ class DataLoader:
                 .apply(lambda x: "yes" if x in ["yes", "true", "verified", "1"] else "no")
             )
 
-        # Ensure date is in datetime format
+        # Ensure date is in datetime format (and convert NaT to None for MongoDB)
         if "date" in self.df.columns:
             self.df["date"] = pd.to_datetime(self.df["date"], errors="coerce")
+            # Convert NaT (invalid dates) to None for MongoDB compatibility
+            self.df["date"] = self.df["date"].where(self.df["date"].notna(), None)
 
         print("🧹 Data cleaning completed")
 
@@ -304,7 +313,7 @@ class DataLoader:
     # -------------------------------------------------------------
     def add_review(self, review_data: Dict) -> bool:
         """Add a new review to MongoDB"""
-        if self.collection is None:  # FIXED: Use 'is None' instead of 'not'
+        if self.collection is None:
             print("⚠️ MongoDB not connected")
             return False
         
@@ -313,8 +322,13 @@ class DataLoader:
             review_data["created_at"] = datetime.utcnow()
             review_data["updated_at"] = datetime.utcnow()
             
+            # FIX: Convert any NaN values to None for MongoDB
+            for key, value in review_data.items():
+                if pd.isna(value):
+                    review_data[key] = None
+            
             # Add sentiment analysis
-            if "review_text" in review_data:
+            if "review_text" in review_data and review_data["review_text"]:
                 sentiment = self._analyze_sentiment(review_data["review_text"])
                 review_data.update({
                     "sentiment_polarity": sentiment["polarity"],
@@ -337,12 +351,12 @@ class DataLoader:
 
     def _refresh_from_mongodb(self):
         """Refresh DataFrame from MongoDB"""
-        if self.collection is not None:  # FIXED: Use 'is not None' instead of truthy
+        if self.collection is not None:
             self._load_from_mongodb()
 
     def get_mongo_stats(self) -> Dict[str, Any]:
         """Get MongoDB statistics"""
-        if self.collection is None:  # FIXED: Use 'is None' instead of 'not'
+        if self.collection is None:
             return {"status": "not_connected"}
         
         try:
