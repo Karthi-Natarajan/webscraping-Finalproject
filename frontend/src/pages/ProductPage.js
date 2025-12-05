@@ -1,132 +1,87 @@
-import React, { useState, useEffect } from 'react';
-import { useParams, useLocation, Link } from 'react-router-dom';
-import api from '../api';
-import ThemeToggle from '../components/ThemeToggle';
-import ReviewCard from '../components/ReviewCard';
+import React, { useEffect, useState } from "react";
+import { getReviews } from "../api";
+import { useParams, useNavigate } from "react-router-dom";
+import { PieChart, Pie, Cell, Tooltip, Legend } from "recharts";
+import { vaderSentiment } from "../utils/vader";
 
 export default function ProductPage() {
-  const { id } = useParams();
-  const location = useLocation();
+  const { name } = useParams();
+  const productName = decodeURIComponent(name);
+  const navigate = useNavigate();
+
   const [reviews, setReviews] = useState([]);
-  const [productMeta, setProductMeta] = useState(null);
-  const [loading, setLoading] = useState(true);
-  const [sentimentFilter, setSentimentFilter] = useState('all');
+  const [sentiment, setSentiment] = useState({ pos: 0, neu: 0, neg: 0 });
 
-  // Initialize from location state or fetch from API
   useEffect(() => {
-    const initializeData = async () => {
-      if (location.state?.reviews) {
-        setReviews(location.state.reviews);
-        setProductMeta(location.state.meta || {});
-      }
-      
-      try {
-        // Always try to fetch fresh data from API
-        const res = await api.getReviews(id);
-        if (res.data && res.data.reviews) {
-          setReviews(res.data.reviews);
-        }
-        if (res.data && res.data.product) {
-          setProductMeta(res.data.product);
-        }
-      } catch (err) {
-        console.warn('Could not fetch fresh reviews:', err);
-      } finally {
-        setLoading(false);
-      }
-    };
+    (async () => {
+      const r = await getReviews(productName);
+      setReviews(r);
 
-    initializeData();
-  }, [id, location.state]);
+      let pos = 0, neu = 0, neg = 0;
 
-  const filteredReviews = reviews.filter(review => {
-    if (sentimentFilter === 'all') return true;
-    if (sentimentFilter === 'positive') return review.sentiment === 'positive';
-    if (sentimentFilter === 'negative') return review.sentiment === 'negative';
-    if (sentimentFilter === 'neutral') return review.sentiment === 'neutral';
-    return true;
-  });
+      r.forEach(item => {
+        const s = vaderSentiment(item.review_text);
 
-  const sentimentCounts = {
-    positive: reviews.filter(r => r.sentiment === 'positive').length,
-    negative: reviews.filter(r => r.sentiment === 'negative').length,
-    neutral: reviews.filter(r => r.sentiment === 'neutral').length,
-  };
+        if (s === "positive") pos++;
+        else if (s === "neutral") neu++;
+        else neg++;
+      });
 
-  if (loading) {
-    return (
-      <div className="container">
-        <div className="loader">Loading reviews...</div>
-      </div>
-    );
-  }
+      setSentiment({ pos, neu, neg });
+    })();
+  }, [productName]);
+
+  const chartData = [
+    { name: "Positive", value: sentiment.pos },
+    { name: "Neutral", value: sentiment.neu },
+    { name: "Negative", value: sentiment.neg }
+  ];
+
+  const COLORS = ["#28a745", "#ffc107", "#dc3545"];
 
   return (
-    <div className="container">
-      <header className="header">
-        <h1>
-          {productMeta?.name || id.replace(/-/g, ' ')}
-          {productMeta?.website && ` (${productMeta.website})`}
-        </h1>
-        
-        <div style={{ display: "flex", gap: "12px", alignItems: "center" }}>
-          <Link to="/" className="back-btn">🏠 Home</Link>
-          <Link to={`/dashboard/${id}`} className="back-btn">📊 Dashboard</Link>
-          <ThemeToggle />
+    <div className="container py-4">
+
+      <button className="btn btn-outline-secondary mb-3" onClick={() => navigate(-1)}>
+        ⬅ Back
+      </button>
+
+      <div className="d-flex justify-content-between align-items-center">
+        <div>
+          <h2 className="fw-bold">{productName}</h2>
+          <p className="text-muted">Total Reviews: {reviews.length}</p>
         </div>
-      </header>
 
-      <main>
-        {productMeta?.url && (
-          <div className="product-url">
-            <a href={productMeta.url} target="_blank" rel="noopener noreferrer">
-              View Product on {productMeta.website}
-            </a>
-          </div>
-        )}
+        <button
+          className="btn btn-primary"
+          onClick={() => navigate(`/analytics/${encodeURIComponent(productName)}`)}
+        >
+          📊 View Analytics
+        </button>
+      </div>
 
-        <div className="sentiment-filter">
-          <div className="filter-buttons">
-            <button 
-              className={sentimentFilter === 'all' ? 'active' : ''}
-              onClick={() => setSentimentFilter('all')}
-            >
-              All ({reviews.length})
-            </button>
-            <button 
-              className={sentimentFilter === 'positive' ? 'active' : ''}
-              onClick={() => setSentimentFilter('positive')}
-            >
-              Positive ({sentimentCounts.positive})
-            </button>
-            <button 
-              className={sentimentFilter === 'negative' ? 'active' : ''}
-              onClick={() => setSentimentFilter('negative')}
-            >
-              Negative ({sentimentCounts.negative})
-            </button>
-            <button 
-              className={sentimentFilter === 'neutral' ? 'active' : ''}
-              onClick={() => setSentimentFilter('neutral')}
-            >
-              Neutral ({sentimentCounts.neutral})
-            </button>
+      <h4 className="mt-3">Sentiment Breakdown</h4>
+
+      <PieChart width={350} height={300}>
+        <Pie data={chartData} dataKey="value" outerRadius={100} label>
+          {chartData.map((entry, i) => (
+            <Cell key={i} fill={COLORS[i]} />
+          ))}
+        </Pie>
+        <Tooltip />
+        <Legend />
+      </PieChart>
+
+      <h4 className="mt-4">Reviews</h4>
+      {reviews.map((r) => (
+        <div key={r.review_id} className="card my-3">
+          <div className="card-body">
+            <h6 className="fw-bold">{r.reviewer}</h6>
+            <p className="text-muted">{r.date}</p>
+            <p>{r.review_text}</p>
           </div>
         </div>
-
-        <div className="reviews-container">
-          {filteredReviews.length === 0 ? (
-            <div className="no-reviews">
-              <p>No reviews found for this product.</p>
-              <p>Try searching for a different product.</p>
-            </div>
-          ) : (
-            filteredReviews.map((review, index) => (
-              <ReviewCard key={index} review={review} />
-            ))
-          )}
-        </div>
-      </main>
+      ))}
     </div>
   );
 }

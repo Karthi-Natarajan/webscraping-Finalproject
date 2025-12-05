@@ -1,97 +1,50 @@
-import React, { useState } from "react";
-import api from "../api";
-import { useNavigate } from "react-router-dom";
-import SearchBar from "../components/SearchBar";
-import ThemeToggle from "../components/ThemeToggle";
+import React, { useEffect, useState } from "react";
+import { getProducts } from "../api";
+import ProductGrid from "../components/ProductGrid";
+import Loader from "../components/Loader";
+import SiteNav from "../components/SiteNav";   // <-- ADD THIS
 
 export default function Home() {
-  const [loading, setLoading] = useState(false);
-  const navigate = useNavigate();
+  const [products, setProducts] = useState([]);
+  const [loading, setLoading] = useState(true);
 
-  const detectWebsite = (url) => {
-    url = url.toLowerCase();
-    if (url.includes("flipkart")) return "flipkart";
-    if (url.includes("amazon")) return "amazon";
-    return "flipkart"; // Default
-  };
-
-  const extractKeyword = (url) => {
-    // Extract keyword from URL or use the text as is
-    if (url.includes("http")) {
-      // Try to extract product name from URL
+  useEffect(() => {
+    (async () => {
       try {
-        const urlObj = new URL(url);
-        const pathname = urlObj.pathname;
-        // Extract product name from path
-        const parts = pathname.split('/');
-        const lastPart = parts[parts.length - 1];
-        return lastPart.replace(/-/g, ' ').split('?')[0];
-      } catch {
-        return url;
+        const p = await getProducts();
+        setProducts(p || []);
+      } catch (e) {
+        console.error(e);
+      } finally {
+        setLoading(false);
       }
-    }
-    return url; // If it's just text, use it as keyword
-  };
-
-  const onSearch = async (url) => {
-    setLoading(true);
-    try {
-      const website = detectWebsite(url);
-      const keyword = extractKeyword(url);
-      
-      // Call scrape endpoint with GET and query params
-      const res = await api.scrape(keyword, website);
-      
-      // Check if we got data
-      if (!res.data) {
-        throw new Error("No data received from scrape");
-      }
-
-      // Create product id
-      const productId = keyword.replace(/\s+/g, "-").toLowerCase();
-      
-      // Save the reviews to database
-      try {
-        await api.saveReviews(
-          { 
-            name: keyword, 
-            website: website,
-            url: url.includes("http") ? url : null
-          }, 
-          res.data.reviews || []
-        );
-      } catch (saveError) {
-        console.warn("Failed to save reviews:", saveError);
-        // Continue even if save fails
-      }
-
-      // Navigate to product page with data
-      navigate(`/product/${productId}`, { 
-        state: { 
-          meta: { keyword, website },
-          reviews: res.data.reviews || []
-        } 
-      });
-
-    } catch (err) {
-      console.error("Scrape error:", err);
-      alert("Scrape failed: " + (err.response?.data?.message || err.message || "Unknown error"));
-    } finally {
-      setLoading(false);
-    }
-  };
+    })();
+  }, []);
 
   return (
-    <div className="home-container">
-      <header className="home-header">
-        <h1>Product Sentiment Analyzer</h1>
-        <ThemeToggle />
-      </header>
+    <>
+      {/* NAVBAR visible only on Home page */}
+      <SiteNav />
 
-      <main className="home-main">
-        <p>Paste an Amazon or Flipkart product URL, or type product name.</p>
-        <SearchBar onSearch={onSearch} loading={loading} />
-      </main>
-    </div>
+      <div className="container py-5" style={{ marginTop: 100 }}>
+        <div className="text-center mb-5">
+          <h1 style={{ fontWeight: 800, fontSize: "2.2rem" }}>
+            Discover product sentiment
+          </h1>
+          <p className="text-muted">
+            Search for a product to view reviews and interactive sentiment charts.
+          </p>
+        </div>
+
+        {loading ? (
+          <Loader />
+        ) : (
+          <>
+            <h5 className="mb-3">Popular & Suggested</h5>
+            <ProductGrid products={products.slice(0, 9)} />
+          </>
+        )}
+      </div>
+    </>
   );
 }
