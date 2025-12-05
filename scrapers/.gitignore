@@ -38,9 +38,12 @@ venv.bak/
 .DS_Store
 Thumbs.db
 
-# Dataset files (keep data folder but ignore specific files)
+# Dataset files (ALLOW CSV files to be tracked)
+# Keep data folder but ignore ONLY json/xlsx
 data/*.json
 data/*.xlsx
+# ❌ DO NOT ignore CSV (so Render gets dataset)
+# data/*.csv   ← removed on purpose
 
 # Logs
 *.log
